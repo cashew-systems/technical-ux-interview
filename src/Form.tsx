@@ -1,5 +1,44 @@
-import { useState } from "react";
-import {Box, Modal} from "@mui/material";
+import {CSSProperties, ReactNode, useState} from "react";
+
+
+
+const Modal = ({ open, onClose, children }: {open: boolean, onClose: () => void, children: ReactNode }) => {
+  if (!open) return null;
+
+  const overlayStyle: CSSProperties = {
+    position: 'fixed',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000
+  };
+
+  const contentStyle: CSSProperties = {
+    backgroundColor: 'white',
+    padding: '20px',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    maxWidth: '80%',
+    maxHeight: '80%',
+    overflow: 'auto',
+    borderRadius: '4px',
+    zIndex: 1001
+  };
+
+  return (
+    <div style={overlayStyle} onClick={onClose}>
+      <div style={contentStyle} onClick={(e) => e.stopPropagation()}>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 const StopInformation = ({stopType}: {stopType: 'Pickup' | 'Delivery'}) => {
 
@@ -12,8 +51,7 @@ const StopInformation = ({stopType}: {stopType: 'Pickup' | 'Delivery'}) => {
       <input placeholder={`${stopType} address state`}/>
       <input placeholder={`${stopType} address zipcode`}/>
     </div>
-  )
-
+  );
 }
 
 const ReferenceNumberModal = ({closeModal}: {closeModal: () => void}) => {
@@ -21,17 +59,16 @@ const ReferenceNumberModal = ({closeModal}: {closeModal: () => void}) => {
   const [referenceNumbers, setReferenceNumbers] = useState<string[]>([]);
   return (
   <Modal open={true} onClose={closeModal}>
-    <Box
-      sx={{
+    <div
+      style={{
         position: 'absolute',
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
+        backgroundColor: 'white',
         width: 400,
-        bgcolor: 'background.paper',
         border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
+        boxShadow: '24',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -44,7 +81,7 @@ const ReferenceNumberModal = ({closeModal}: {closeModal: () => void}) => {
       }
       <button onClick={() => setReferenceNumbers([...referenceNumbers, 'new number'])}>Add reference number</button>
       <button onClick={closeModal}>Confirm </button>
-    </Box>
+    </div>
   </Modal>
   )
 
@@ -70,7 +107,7 @@ const Form = () => {
                    }}>
         {referenceNumberModalShowing && <ReferenceNumberModal closeModal={() => setReferenceNumberModalShowing(false)} />}
         <div>
-          <div><a onClick={() => setReferenceNumberModalShowing(true)}>Reference number</a></div>
+          <div><a onClick={() => setReferenceNumberModalShowing(true)} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Reference number</a></div>
           <input placeholder="reference number" />
           <input placeholder="for name" />
           <input placeholder="for phone" />
